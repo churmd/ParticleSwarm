@@ -1,0 +1,78 @@
+package views;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
+
+import javax.swing.JPanel;
+
+import model.Enviroment;
+import model.Particle;
+import model.vector.Vector;
+
+public class ParticlesPanel extends JPanel implements Observer {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Enviroment env;
+
+	public ParticlesPanel(Enviroment env) {
+		super();
+		this.env = env;
+	}
+
+	@Override
+	public void paintComponent(Graphics g) {
+		System.out.println("Paint called");
+		Graphics2D g2 = (Graphics2D) g;
+		int height = getHeight();
+		int width = getWidth();
+		g2.clearRect(0, 0, width, height);
+		g2.setColor(Color.BLACK);
+		ArrayList<Particle> particles = env.getParticles();
+
+		int i = 0;
+		for (Particle p : particles) {
+			double x = p.getPosition().getElementAtIndex(0);
+			x = (x / 100.0) * width;
+			double y = p.getPosition().getElementAtIndex(1);
+			y = (y / 100.0) * height;
+			double xt = p.getPosition().getElementAtIndex(0) + p.getVelocity().getElementAtIndex(0) * 2;
+			xt = ((xt / 100.0) * width);
+			double yt = p.getPosition().getElementAtIndex(1) + p.getVelocity().getElementAtIndex(1) * 2;
+			yt = ((yt / 100.0) * height);
+			Line2D.Double line = new Line2D.Double(x, y, xt, yt);
+			Ellipse2D.Double circle = new Ellipse2D.Double(x - 2.5, y - 2.5, 5.0, 5.0);
+			g2.fill(circle);
+			g2.draw(line);
+			// System.out.println("Particle " + i + " painted");
+			i++;
+		}
+
+		for (Vector<Double> goal : env.getGoals()) {
+			g2.setColor(Color.GREEN);
+			double x = goal.getElementAtIndex(0);
+			x = (x / 100.0) * width;
+			double y = goal.getElementAtIndex(1);
+			y = (y / 100.0) * height;
+			Ellipse2D.Double circle = new Ellipse2D.Double(x, y, 5.0, 5.0);
+			g2.fill(circle);
+		}
+		System.out.println("Repainted");
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		System.out.println("Panel update called");
+		repaint();
+	}
+
+}
