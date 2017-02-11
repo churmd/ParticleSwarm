@@ -3,6 +3,11 @@ package model;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import model.vector.Vector;
 import model.vector.VectorCalcDouble;
@@ -203,30 +208,57 @@ public class Enviroment extends Observable {
 		return calc.add(scaleOldVel, scaleNewVel);
 	}
 	
+	private class UpdateAParticle implements Callable<Particle> {
+		
+		private Particle p;
+
+		public UpdateAParticle(Particle p) {
+			this.p = p;
+		}
+
+		@Override
+		public Particle call() throws Exception {
+			ArrayList<Vector<Double>> vectors = new ArrayList<>(5);
+			vectors.add(p.getVelocity());
+			vectors.add(calc.multiplyConstant(cohesion(p), 1));
+			vectors.add(alignment(p));
+			vectors.add(calc.multiplyConstant(separation(p), 2));
+			vectors.add(calc.multiplyConstant(seekGoal(p), 1));
+
+			Vector<Double> newVelocity = calc.add(vectors);
+			newVelocity = smoothVelocity(p.getVelocity(), newVelocity);
+			newVelocity = calc.normalise(newVelocity);
+			newVelocity = keepInBounds(p.getPosition(), newVelocity);
+
+			Vector<Double> newPosition = calc.add(p.getPosition(), newVelocity);
+
+			p.updatedPosition(newPosition);
+			p.updatedVelocity(newVelocity);
+			
+			return p;
+		}
+		
+	}
+	
 	public void updateParticles() {
 		try {
+			ExecutorService pool = Executors.newFixedThreadPool(10);
+			
+			ArrayList<Future<Particle>> futures = new ArrayList<>(numParticles);
+			
 			for (Particle p : particles) {
-				ArrayList<Vector<Double>> vectors = new ArrayList<>(5);
-				vectors.add(p.getVelocity());
-				vectors.add(calc.multiplyConstant(cohesion(p), 1));
-				vectors.add(alignment(p));
-				vectors.add(calc.multiplyConstant(separation(p), 2));
-				vectors.add(calc.multiplyConstant(seekGoal(p), 1));
-
-				Vector<Double> newVelocity = calc.add(vectors);
-				newVelocity = smoothVelocity(p.getVelocity(), newVelocity);
-				newVelocity = calc.normalise(newVelocity);
-				newVelocity = keepInBounds(p.getPosition(), newVelocity);
-
-				Vector<Double> newPosition = calc.add(p.getPosition(), newVelocity);
-
-				p.updatedPosition(newPosition);
-				p.updatedVelocity(newVelocity);
+				Future<Particle> f = pool.submit(new UpdateAParticle(p));
+				futures.add(f);
 			}
-			for (Particle p : particles) {
+
+			for (Future<Particle> f : futures) {
+				Particle p = f.get();
 				p.update();
 			}
-		} catch (VectorDimensionException e) {
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
 			e.printStackTrace();
 			// TODO tidy up shutdown
 			System.exit(1);
