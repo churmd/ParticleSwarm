@@ -255,6 +255,8 @@ public class Enviroment extends Observable {
 				Particle p = f.get();
 				p.update();
 			}
+			
+			pool.shutdown();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
