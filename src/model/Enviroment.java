@@ -22,6 +22,7 @@ public class Enviroment extends Observable {
 	private int numParticles;
 	private double neighbourDistance;
 	private ArrayList<Vector<Double>> goals;
+	private ArrayList<Vector<Double>> threats;
 
 	public Enviroment(int numParticles) {
 		calc = new VectorCalcDouble();
@@ -30,13 +31,21 @@ public class Enviroment extends Observable {
 		neighbourDistance = 20.0;
 		width = 100.0;
 		height = 100.0;
+		
 		goals = new ArrayList<>();
 		goals.add(new Vector<>(new Double[] { 50.0, 50.0 }));
 		goals.add(new Vector<>(new Double[] { 25.0, 25.0 }));
+		
+		threats = new ArrayList<>();
+		threats.add(new Vector<>(new Double[] {37.5,37.5}));
 	}
 
 	public ArrayList<Vector<Double>> getGoals() {
 		return goals;
+	}
+	
+	public ArrayList<Vector<Double>> getThreats() {
+		return threats;
 	}
 
 	public void setNumParticles(int numParticles) {
@@ -149,7 +158,22 @@ public class Enviroment extends Observable {
 			if (dist < neighbourDistance) {
 				Vector<Double> velocityToGoal = calc.subtract(goal, p.getPosition());
 				velocityToGoal = calc.normalise(velocityToGoal);
-				total = calc.add(velocityToGoal, velocityToGoal);
+				total = calc.add(total, velocityToGoal);
+			}
+		}
+		
+		return calc.normalise(total);
+	}
+	
+	private Vector<Double> avoidThreats(Particle p) throws VectorDimensionException{
+		Vector<Double> total = new Vector<>(new Double[] {0.0,0.0});
+		
+		for(Vector<Double> threat : getThreats()){
+			double dist = calc.distanceBetweenVectors(p.getPosition(), threat);
+			if(dist < neighbourDistance){
+				Vector<Double> velocityFromThreat = calc.subtract(p.getPosition(), threat);
+				velocityFromThreat = calc.normalise(velocityFromThreat);
+				total = calc.add(total, velocityFromThreat);
 			}
 		}
 		
@@ -224,12 +248,13 @@ public class Enviroment extends Observable {
 
 		@Override
 		public Particle call() throws Exception {
-			ArrayList<Vector<Double>> vectors = new ArrayList<>(5);
+			ArrayList<Vector<Double>> vectors = new ArrayList<>(6);
 			vectors.add(p.getVelocity());
-			vectors.add(calc.multiplyConstant(cohesion(p), 1));
+			vectors.add(calc.multiplyConstant(cohesion(p), 0.7));
 			vectors.add(alignment(p));
 			vectors.add(calc.multiplyConstant(separation(p), 2));
 			vectors.add(calc.multiplyConstant(seekGoal(p), 1));
+			vectors.add(avoidThreats(p));
 
 			Vector<Double> newVelocity = calc.add(vectors);
 			newVelocity = smoothVelocity(p.getVelocity(), newVelocity);
