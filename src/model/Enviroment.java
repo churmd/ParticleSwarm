@@ -250,7 +250,7 @@ public class Enviroment extends Observable {
 		public Particle call() throws Exception {
 			ArrayList<Vector<Double>> vectors = new ArrayList<>(6);
 			vectors.add(p.getVelocity());
-			vectors.add(calc.multiplyConstant(cohesion(p), 0.7));
+			vectors.add(calc.multiplyConstant(cohesion(p), 0.8));
 			vectors.add(alignment(p));
 			vectors.add(calc.multiplyConstant(separation(p), 2));
 			vectors.add(calc.multiplyConstant(seekGoal(p), 1));
