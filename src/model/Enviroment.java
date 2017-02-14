@@ -157,7 +157,7 @@ public class Enviroment extends Observable {
 			double dist = calc.distanceBetweenVectors(p.getPosition(), goal);
 			if (dist < neighbourDistance) {
 				Vector<Double> velocityToGoal = calc.subtract(goal, p.getPosition());
-				velocityToGoal = calc.normalise(velocityToGoal);
+				velocityToGoal = calc.multiplyConstant(velocityToGoal, neighbourDistance-dist);
 				total = calc.add(total, velocityToGoal);
 			}
 		}
@@ -172,7 +172,7 @@ public class Enviroment extends Observable {
 			double dist = calc.distanceBetweenVectors(p.getPosition(), threat);
 			if(dist < neighbourDistance){
 				Vector<Double> velocityFromThreat = calc.subtract(p.getPosition(), threat);
-				velocityFromThreat = calc.normalise(velocityFromThreat);
+				velocityFromThreat = calc.multiplyConstant(velocityFromThreat, neighbourDistance-dist);
 				total = calc.add(total, velocityFromThreat);
 			}
 		}
