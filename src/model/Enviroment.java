@@ -208,6 +208,12 @@ public class Enviroment extends Observable {
 		return calc.add(scaleOldVel, scaleNewVel);
 	}
 	
+	/**
+	 * This a class that extends callable so that particles can be updated 
+	 * in parallel and execptions can be handled
+	 * @author daniel
+	 *
+	 */
 	private class UpdateAParticle implements Callable<Particle> {
 		
 		private Particle p;
