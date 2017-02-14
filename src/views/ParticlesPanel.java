@@ -66,6 +66,17 @@ public class ParticlesPanel extends JPanel implements Observer {
 			Ellipse2D.Double circle = new Ellipse2D.Double(x, y, 5.0, 5.0);
 			g2.fill(circle);
 		}
+		
+		for (Vector<Double> threat : env.getThreats()) {
+			g2.setColor(Color.RED);
+			double x = threat.getElementAtIndex(0);
+			x = (x / 100.0) * width;
+			double y = threat.getElementAtIndex(1);
+			y = (y / 100.0) * height;
+			Ellipse2D.Double circle = new Ellipse2D.Double(x, y, 5.0, 5.0);
+			g2.fill(circle);
+		}
+		
 		System.out.println("Repainted");
 	}
 
