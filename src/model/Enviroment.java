@@ -117,7 +117,7 @@ public class Enviroment extends Observable {
 	}
 
 	private Vector<Double> separation(Particle p) throws VectorDimensionException {
-		double neighbourDistance = 5.0;
+		double desiredSeparation = neighbourDistance / 4.0;
 		int count = 0;
 		Vector<Double> sumOfDist = new Vector<>(new Double[] { 0.0, 0.0 });
 		for (int i = 0; i < particles.size(); i++) {
@@ -128,10 +128,10 @@ public class Enviroment extends Observable {
 			// other.getPosition());
 			// sumOfDist = calc.subtract(sumOfDist, diff);
 			// }
-			if (dist > 0 && dist < neighbourDistance) {
+			if (dist > 0 && dist < desiredSeparation) {
 				Vector<Double> diff = calc.subtract(other.getPosition(), p.getPosition());
 				diff = calc.normalise(diff);
-				diff = calc.multiplyConstant(diff, neighbourDistance - dist);
+				diff = calc.multiplyConstant(diff, desiredSeparation - dist);
 				sumOfDist = calc.add(sumOfDist, diff);
 				count++;
 			}
