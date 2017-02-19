@@ -1,5 +1,7 @@
 package views;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.swing.JFrame;
 
 import controller.Controller;
@@ -21,6 +23,16 @@ public class Test {
 		frame.add(panel);
 		frame.setVisible(true);
 		
-		con.startSwarmTest();
+		con.startSwarm();
+		try {
+			TimeUnit.SECONDS.sleep(1);
+			con.addGoal(70, 70);
+			con.addThreat(45, 45);
+			TimeUnit.SECONDS.sleep(4);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		con.stopSwarm();
 	}
 }

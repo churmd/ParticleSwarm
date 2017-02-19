@@ -44,8 +44,16 @@ public class Enviroment extends Observable {
 		return goals;
 	}
 	
+	public void addGoal(double x, double y){
+		goals.add(new Vector<>(new Double[] {x,y}));
+	}
+	
 	public ArrayList<Vector<Double>> getThreats() {
 		return threats;
+	}
+	
+	public void addThreat(double x, double y){
+		threats.add(new Vector<>(new Double[] {x,y}));
 	}
 
 	public void setNumParticles(int numParticles) {

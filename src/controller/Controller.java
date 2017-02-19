@@ -1,6 +1,8 @@
 package controller;
 
-import javax.swing.plaf.SliderUI;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import model.Enviroment;
 
@@ -9,25 +11,22 @@ public class Controller {
 	private Enviroment enviroment;
 	private boolean run;
 	private Thread t;
+	private ScheduledExecutorService schedular;
 	
 	public Controller(Enviroment enviroment){
 		this.enviroment = enviroment;
+		schedular = Executors.newSingleThreadScheduledExecutor();
 	}
 	
 	public void startSwarm(){
-		run = true;
 		Runnable updater = new Runnable() {
 			
 			@Override
 			public void run() {
-				while(run){
-					enviroment.updateParticles();
-				}
-				
+				enviroment.updateParticles();
 			}
 		};
-		t = new Thread(updater);
-		t.start();
+		schedular.scheduleAtFixedRate(updater, 0, 50, TimeUnit.MILLISECONDS);
 	}
 	
 	public void startSwarmTest(){
@@ -53,12 +52,14 @@ public class Controller {
 	}
 	
 	public void stopSwarm(){
-		run = false;
-		try {
-			t.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		schedular.shutdown();
+	}
+	
+	public void addGoal(double x, double y){
+		enviroment.addGoal(x, y);
+	}
+	
+	public void addThreat(double x, double y){
+		enviroment.addThreat(x, y);
 	}
 }
