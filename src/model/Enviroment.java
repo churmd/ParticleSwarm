@@ -8,6 +8,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 import model.vector.Vector;
 import model.vector.VectorCalcDouble;
@@ -23,8 +26,15 @@ public class Enviroment extends Observable {
 	private double neighbourDistance;
 	private ArrayList<Vector<Double>> goals;
 	private ArrayList<Vector<Double>> threats;
+	private ReentrantReadWriteLock rwl;
+	private ReadLock rl;
+	private WriteLock wl;
 
 	public Enviroment(int numParticles) {
+		rwl = new ReentrantReadWriteLock(true);
+		rl = rwl.readLock();
+		wl = rwl.writeLock();
+		
 		calc = new VectorCalcDouble();
 		this.numParticles = numParticles;
 		dimension = 2;
@@ -33,27 +43,47 @@ public class Enviroment extends Observable {
 		height = 100.0;
 		
 		goals = new ArrayList<>();
-		goals.add(new Vector<>(new Double[] { 50.0, 50.0 }));
-		goals.add(new Vector<>(new Double[] { 25.0, 25.0 }));
+		addGoal(50, 50);
+		addGoal(25,  25);
 		
 		threats = new ArrayList<>();
-		threats.add(new Vector<>(new Double[] {37.5,37.5}));
+		addThreat(37.5, 37.5);
 	}
 
 	public ArrayList<Vector<Double>> getGoals() {
-		return goals;
+		rl.lock();
+		try {
+			return goals;
+		} finally {
+			rl.unlock();
+		}
 	}
 	
 	public void addGoal(double x, double y){
-		goals.add(new Vector<>(new Double[] {x,y}));
+		wl.lock();
+		try {
+			goals.add(new Vector<>(new Double[] {x,y}));
+		} finally {
+			wl.unlock();
+		}
 	}
 	
 	public ArrayList<Vector<Double>> getThreats() {
-		return threats;
+		rl.lock();
+		try {
+			return threats;
+		} finally {
+			rl.unlock();
+		}
 	}
 	
 	public void addThreat(double x, double y){
-		threats.add(new Vector<>(new Double[] {x,y}));
+		wl.lock();
+		try {
+			threats.add(new Vector<>(new Double[] {x,y}));
+		} finally {
+			wl.unlock();
+		}
 	}
 
 	public void setNumParticles(int numParticles) {
@@ -161,7 +191,6 @@ public class Enviroment extends Observable {
 		Vector<Double> total = new Vector<>(new Double[] {0.0,0.0});
 		
 		for (Vector<Double> goal : getGoals()) {
-
 			double dist = calc.distanceBetweenVectors(p.getPosition(), goal);
 			if (dist < neighbourDistance) {
 				Vector<Double> velocityToGoal = calc.subtract(goal, p.getPosition());

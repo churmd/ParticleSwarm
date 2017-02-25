@@ -9,16 +9,17 @@ import model.Enviroment;
 public class Controller {
 
 	private Enviroment enviroment;
-	private boolean run;
+	private boolean running;
 	private Thread t;
 	private ScheduledExecutorService schedular;
 	
 	public Controller(Enviroment enviroment){
 		this.enviroment = enviroment;
-		schedular = Executors.newSingleThreadScheduledExecutor();
 	}
 	
 	public void startSwarm(){
+		schedular = Executors.newSingleThreadScheduledExecutor();
+		
 		Runnable updater = new Runnable() {
 			
 			@Override
@@ -26,6 +27,8 @@ public class Controller {
 				enviroment.updateParticles();
 			}
 		};
+		
+		running = true;
 		schedular.scheduleAtFixedRate(updater, 0, 50, TimeUnit.MILLISECONDS);
 	}
 	
@@ -52,7 +55,10 @@ public class Controller {
 	}
 	
 	public void stopSwarm(){
-		schedular.shutdown();
+		if(running){
+			schedular.shutdown();
+			running = false;
+		} 
 	}
 	
 	public void addGoal(double x, double y){
