@@ -12,7 +12,7 @@ import java.util.Observer;
 import javax.swing.JPanel;
 
 import model.Model;
-import model.Particle;
+import model.environment.Particle;
 import model.vector.Vector;
 
 public class ParticlesPanel extends JPanel implements Observer {

@@ -6,15 +6,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import model.environment.Environment;
+import model.environment.Particle;
 import model.vector.Vector;
 
 public class Model extends Observable {
 
-	private Enviroment env;
+	private Environment env;
 	private boolean running;
 	private ScheduledExecutorService schedular;
 
-	public Model(Enviroment env) {
+	public Model(Environment env) {
 		super();
 		this.env = env;
 	}

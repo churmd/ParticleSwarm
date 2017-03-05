@@ -1,4 +1,4 @@
-package model;
+package model.environment;
 
 import java.util.ArrayList;
 import java.util.Observable;
@@ -16,7 +16,7 @@ import model.vector.Vector;
 import model.vector.VectorCalcDouble;
 import model.vector.VectorDimensionException;
 
-public class Enviroment extends Observable {
+public class Environment extends Observable {
 
 	private ArrayList<Particle> particles;
 	private VectorCalcDouble calc;
@@ -30,7 +30,7 @@ public class Enviroment extends Observable {
 	private ReadLock rl;
 	private WriteLock wl;
 
-	public Enviroment(int numParticles) {
+	public Environment(int numParticles) {
 		rwl = new ReentrantReadWriteLock(true);
 		rl = rwl.readLock();
 		wl = rwl.writeLock();

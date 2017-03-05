@@ -4,16 +4,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import model.Enviroment;
+import model.environment.Environment;
 
 public class Controller {
 
-	private Enviroment enviroment;
+	private Environment enviroment;
 	private boolean running;
 	private Thread t;
 	private ScheduledExecutorService schedular;
 	
-	public Controller(Enviroment enviroment){
+	public Controller(Environment enviroment){
 		this.enviroment = enviroment;
 	}
 	
