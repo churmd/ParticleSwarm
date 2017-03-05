@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 
 import controller.Controller;
 import model.Enviroment;
+import model.Model;
 
 public class Test {
 
@@ -16,23 +17,23 @@ public class Test {
 		
 		Enviroment env = new Enviroment(100);
 		env.genNewParticles();
-		Controller con = new Controller(env);
-		ParticlesPanel panel = new ParticlesPanel(env);
+		Model model = new Model(env);
+		ParticlesPanel panel = new ParticlesPanel(model);
 		env.addObserver(panel);
 		
 		frame.add(panel);
 		frame.setVisible(true);
 		
-		con.startSwarm();
+		model.startSwarm();
 		try {
 			TimeUnit.SECONDS.sleep(1);
-			con.addGoal(70, 70);
-			con.addThreat(45, 45);
+			model.addGoal(70, 70);
+			model.addThreat(45, 45);
 			TimeUnit.SECONDS.sleep(4);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		con.stopSwarm();
+		model.stopSwarm();
 	}
 }

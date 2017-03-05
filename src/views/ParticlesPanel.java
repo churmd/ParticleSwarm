@@ -1,7 +1,6 @@
 package views;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
@@ -12,7 +11,7 @@ import java.util.Observer;
 
 import javax.swing.JPanel;
 
-import model.Enviroment;
+import model.Model;
 import model.Particle;
 import model.vector.Vector;
 
@@ -22,11 +21,11 @@ public class ParticlesPanel extends JPanel implements Observer {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Enviroment env;
+	private Model model;
 
-	public ParticlesPanel(Enviroment env) {
+	public ParticlesPanel(Model model) {
 		super();
-		this.env = env;
+		this.model = model;
 	}
 
 	@Override
@@ -37,9 +36,8 @@ public class ParticlesPanel extends JPanel implements Observer {
 		int width = getWidth();
 		g2.clearRect(0, 0, width, height);
 		g2.setColor(Color.BLACK);
-		ArrayList<Particle> particles = env.getParticles();
+		ArrayList<Particle> particles = model.getParticles();
 
-		int i = 0;
 		for (Particle p : particles) {
 			double x = p.getPosition().getElementAtIndex(0);
 			x = (x / 100.0) * width;
@@ -53,11 +51,9 @@ public class ParticlesPanel extends JPanel implements Observer {
 			Ellipse2D.Double circle = new Ellipse2D.Double(x - 2.5, y - 2.5, 5.0, 5.0);
 			g2.fill(circle);
 			g2.draw(line);
-			// System.out.println("Particle " + i + " painted");
-			i++;
 		}
 
-		for (Vector<Double> goal : env.getGoals()) {
+		for (Vector<Double> goal : model.getGoals()) {
 			g2.setColor(Color.GREEN);
 			double x = goal.getElementAtIndex(0);
 			x = (x / 100.0) * width;
@@ -67,7 +63,7 @@ public class ParticlesPanel extends JPanel implements Observer {
 			g2.fill(circle);
 		}
 		
-		for (Vector<Double> threat : env.getThreats()) {
+		for (Vector<Double> threat : model.getThreats()) {
 			g2.setColor(Color.RED);
 			double x = threat.getElementAtIndex(0);
 			x = (x / 100.0) * width;
