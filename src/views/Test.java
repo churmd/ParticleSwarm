@@ -1,10 +1,10 @@
 package views;
 
+import java.awt.BorderLayout;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
 
-import controller.Controller;
 import model.Enviroment;
 import model.Model;
 
@@ -19,21 +19,25 @@ public class Test {
 		env.genNewParticles();
 		Model model = new Model(env);
 		ParticlesPanel panel = new ParticlesPanel(model);
-		env.addObserver(panel);
+		ButtonPanel buttons = new ButtonPanel(model);
 		
-		frame.add(panel);
+		model.addObserver(panel);
+		
+		frame.setLayout(new BorderLayout());
+		frame.add(panel, BorderLayout.CENTER);
+		frame.add(buttons, BorderLayout.EAST);
 		frame.setVisible(true);
 		
-		model.startSwarm();
-		try {
-			TimeUnit.SECONDS.sleep(1);
-			model.addGoal(70, 70);
-			model.addThreat(45, 45);
-			TimeUnit.SECONDS.sleep(4);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		model.stopSwarm();
+//		model.startSwarm();
+//		try {
+//			TimeUnit.SECONDS.sleep(1);
+//			model.addGoal(70, 70);
+//			model.addThreat(45, 45);
+//			TimeUnit.SECONDS.sleep(4);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		model.stopSwarm();
 	}
 }

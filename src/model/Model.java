@@ -8,63 +8,64 @@ import java.util.concurrent.TimeUnit;
 
 import model.vector.Vector;
 
-public class Model extends Observable{
+public class Model extends Observable {
 
 	private Enviroment env;
 	private boolean running;
 	private ScheduledExecutorService schedular;
-	
-	public Model(Enviroment env){
+
+	public Model(Enviroment env) {
 		super();
 		this.env = env;
 	}
-	
-	public void startSwarm(){
-		schedular = Executors.newSingleThreadScheduledExecutor();
-		
-		Runnable updater = new Runnable() {
-			
-			@Override
-			public void run() {
-				env.updateParticles();
-				setChanged();
-				notifyObservers();
-			}
-		};
-		
-		running = true;
-		schedular.scheduleAtFixedRate(updater, 0, 50, TimeUnit.MILLISECONDS);
+
+	public void startSwarm() {
+		if (!running) {
+			schedular = Executors.newSingleThreadScheduledExecutor();
+
+			Runnable updater = new Runnable() {
+
+				@Override
+				public void run() {
+					env.updateParticles();
+					setChanged();
+					notifyObservers();
+				}
+			};
+
+			running = true;
+			schedular.scheduleAtFixedRate(updater, 0, 50, TimeUnit.MILLISECONDS);
+		}
 	}
-	
-	
-	public void stopSwarm(){
-		if(running){
+
+	public void stopSwarm() {
+		if (running) {
 			schedular.shutdown();
 			running = false;
-		} 
+		}
 	}
-	
-	public void addGoal(double x, double y){
+
+	public void addGoal(double x, double y) {
 		env.addGoal(x, y);
 		setChanged();
 		notifyObservers();
 	}
-	
-	public void addThreat(double x, double y){
+
+	public void addThreat(double x, double y) {
 		env.addThreat(x, y);
 		setChanged();
 		notifyObservers();
 	}
-	
-	public ArrayList<Particle> getParticles(){
+
+	public ArrayList<Particle> getParticles() {
 		return env.getParticles();
 	}
-	
-	public ArrayList<Vector<Double>> getGoals(){
+
+	public ArrayList<Vector<Double>> getGoals() {
 		return env.getGoals();
 	}
-	
-	public ArrayList<Vector<Double>> getThreats(){
+
+	public ArrayList<Vector<Double>> getThreats() {
 		return env.getThreats();
 	}
 }
