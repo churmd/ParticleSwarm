@@ -42,6 +42,8 @@ public class Enviroment extends Observable {
 		width = 100.0;
 		height = 100.0;
 		
+		genNewParticles();
+		
 		goals = new ArrayList<>();
 		addGoal(50, 50);
 		addGoal(25,  25);
