@@ -34,20 +34,20 @@ public class Environment extends Observable {
 		rwl = new ReentrantReadWriteLock(true);
 		rl = rwl.readLock();
 		wl = rwl.writeLock();
-		
+
 		calc = new VectorCalcDouble();
 		this.numParticles = numParticles;
 		dimension = 2;
 		neighbourDistance = 20.0;
 		width = 100.0;
 		height = 100.0;
-		
+
 		genNewParticles();
-		
+
 		goals = new ArrayList<>();
 		addGoal(50, 50);
-		addGoal(25,  25);
-		
+		addGoal(25, 25);
+
 		threats = new ArrayList<>();
 		addThreat(37.5, 37.5);
 	}
@@ -60,16 +60,16 @@ public class Environment extends Observable {
 			rl.unlock();
 		}
 	}
-	
-	public void addGoal(double x, double y){
+
+	public void addGoal(double x, double y) {
 		wl.lock();
 		try {
-			goals.add(new Vector<>(new Double[] {x,y}));
+			goals.add(new Vector<>(new Double[] { x, y }));
 		} finally {
 			wl.unlock();
 		}
 	}
-	
+
 	public ArrayList<Vector<Double>> getThreats() {
 		rl.lock();
 		try {
@@ -78,11 +78,11 @@ public class Environment extends Observable {
 			rl.unlock();
 		}
 	}
-	
-	public void addThreat(double x, double y){
+
+	public void addThreat(double x, double y) {
 		wl.lock();
 		try {
-			threats.add(new Vector<>(new Double[] {x,y}));
+			threats.add(new Vector<>(new Double[] { x, y }));
 		} finally {
 			wl.unlock();
 		}
@@ -90,6 +90,11 @@ public class Environment extends Observable {
 
 	public void setNumParticles(int numParticles) {
 		this.numParticles = numParticles;
+		genNewParticles();
+	}
+	
+	public int getNumParticles(){
+		return numParticles;
 	}
 
 	public ArrayList<Particle> getParticles() {
@@ -101,15 +106,19 @@ public class Environment extends Observable {
 		Random gen = new Random();
 		for (int i = 0; i < numParticles; i++) {
 			Vector<Double> position = new Vector<>(
-					new Double[] { (double) gen.nextInt(100), (double) gen.nextInt(100) });
+					new Double[] { (double) gen.nextInt(width.intValue()), 
+							(double) gen.nextInt(height.intValue()) });
+			
 			Double v1 = gen.nextDouble();
 			if (gen.nextBoolean()) {
 				v1 = -v1;
 			}
+			
 			double v2 = gen.nextDouble();
 			if (gen.nextBoolean()) {
 				v2 = -v2;
 			}
+			
 			Vector<Double> velocity = new Vector<>(new Double[] { v1, v2 });
 			Particle p = new Particle(position, velocity);
 			particles.add(p);
@@ -190,32 +199,32 @@ public class Environment extends Observable {
 	}
 
 	private Vector<Double> seekGoal(Particle p) throws VectorDimensionException {
-		Vector<Double> total = new Vector<>(new Double[] {0.0,0.0});
-		
+		Vector<Double> total = new Vector<>(new Double[] { 0.0, 0.0 });
+
 		for (Vector<Double> goal : getGoals()) {
 			double dist = calc.distanceBetweenVectors(p.getPosition(), goal);
 			if (dist < neighbourDistance) {
 				Vector<Double> velocityToGoal = calc.subtract(goal, p.getPosition());
-				velocityToGoal = calc.multiplyConstant(velocityToGoal, neighbourDistance-dist);
+				velocityToGoal = calc.multiplyConstant(velocityToGoal, neighbourDistance - dist);
 				total = calc.add(total, velocityToGoal);
 			}
 		}
-		
+
 		return calc.normalise(total);
 	}
-	
-	private Vector<Double> avoidThreats(Particle p) throws VectorDimensionException{
-		Vector<Double> total = new Vector<>(new Double[] {0.0,0.0});
-		
-		for(Vector<Double> threat : getThreats()){
+
+	private Vector<Double> avoidThreats(Particle p) throws VectorDimensionException {
+		Vector<Double> total = new Vector<>(new Double[] { 0.0, 0.0 });
+
+		for (Vector<Double> threat : getThreats()) {
 			double dist = calc.distanceBetweenVectors(p.getPosition(), threat);
-			if(dist < neighbourDistance){
+			if (dist < neighbourDistance) {
 				Vector<Double> velocityFromThreat = calc.subtract(p.getPosition(), threat);
-				velocityFromThreat = calc.multiplyConstant(velocityFromThreat, neighbourDistance-dist);
+				velocityFromThreat = calc.multiplyConstant(velocityFromThreat, neighbourDistance - dist);
 				total = calc.add(total, velocityFromThreat);
 			}
 		}
-		
+
 		return calc.normalise(total);
 	}
 
@@ -264,21 +273,23 @@ public class Environment extends Observable {
 
 	}
 
-	private Vector<Double> smoothVelocity(Vector<Double> oldVel, Vector<Double> newVel) throws VectorDimensionException{
+	private Vector<Double> smoothVelocity(Vector<Double> oldVel, Vector<Double> newVel)
+			throws VectorDimensionException {
 		double a = 0.6;
-		Vector<Double> scaleOldVel = calc.multiplyConstant(oldVel, 1-a);
+		Vector<Double> scaleOldVel = calc.multiplyConstant(oldVel, 1 - a);
 		Vector<Double> scaleNewVel = calc.multiplyConstant(newVel, a);
 		return calc.add(scaleOldVel, scaleNewVel);
 	}
-	
+
 	/**
-	 * This a class that extends callable so that particles can be updated 
-	 * in parallel and execptions can be handled
+	 * This a class that extends callable so that particles can be updated in
+	 * parallel and execptions can be handled
+	 * 
 	 * @author daniel
 	 *
 	 */
 	private class UpdateAParticle implements Callable<Particle> {
-		
+
 		private Particle p;
 
 		public UpdateAParticle(Particle p) {
@@ -304,18 +315,18 @@ public class Environment extends Observable {
 
 			p.updatedPosition(newPosition);
 			p.updatedVelocity(newVelocity);
-			
+
 			return p;
 		}
-		
+
 	}
-	
+
 	public void updateParticles() {
 		try {
 			ExecutorService pool = Executors.newFixedThreadPool(10);
-			
+
 			ArrayList<Future<Particle>> futures = new ArrayList<>(numParticles);
-			
+
 			for (Particle p : particles) {
 				Future<Particle> f = pool.submit(new UpdateAParticle(p));
 				futures.add(f);
@@ -325,7 +336,7 @@ public class Environment extends Observable {
 				Particle p = f.get();
 				p.update();
 			}
-			
+
 			pool.shutdown();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block

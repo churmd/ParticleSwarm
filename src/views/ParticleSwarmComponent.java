@@ -16,6 +16,7 @@ public class ParticleSwarmComponent extends JPanel{
 		ButtonPanel buttons = new ButtonPanel(model);
 		
 		model.addObserver(particles);
+		model.addObserver(buttons);
 		
 		setLayout(new BorderLayout());
 		add(particles, BorderLayout.CENTER);

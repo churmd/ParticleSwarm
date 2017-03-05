@@ -37,6 +37,8 @@ public class Model extends Observable {
 
 			running = true;
 			schedular.scheduleAtFixedRate(updater, 0, 50, TimeUnit.MILLISECONDS);
+			setChanged();
+			notifyObservers();
 		}
 	}
 
@@ -44,6 +46,8 @@ public class Model extends Observable {
 		if (running) {
 			schedular.shutdown();
 			running = false;
+			setChanged();
+			notifyObservers();
 		}
 	}
 
@@ -69,5 +73,21 @@ public class Model extends Observable {
 
 	public ArrayList<Vector<Double>> getThreats() {
 		return env.getThreats();
+	}
+	
+	public void setNumParticles(int num){
+		if(!running){
+			env.setNumParticles(num);
+			setChanged();
+			notifyObservers();
+		}
+	}
+	
+	public int getNumParticles(){
+		return env.getNumParticles();
+	}
+	
+	public boolean isRunning(){
+		return running;
 	}
 }
