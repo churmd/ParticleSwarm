@@ -1,5 +1,6 @@
 package views;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.Observable;
 import java.util.Observer;
@@ -25,6 +26,8 @@ public class ButtonPanel extends JPanel implements Observer {
 	public ButtonPanel(Model model) {
 		super();
 		this.model = model;
+		
+		setPreferredSize(new Dimension(200, 500));
 
 		startButton();
 		stopButton();

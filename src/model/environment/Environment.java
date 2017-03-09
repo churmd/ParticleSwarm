@@ -16,7 +16,7 @@ import model.vector.Vector;
 import model.vector.VectorCalcDouble;
 import model.vector.VectorDimensionException;
 
-public class Environment extends Observable {
+public class Environment {
 
 	private ArrayList<Particle> particles;
 	private VectorCalcDouble calc;
@@ -346,8 +346,6 @@ public class Environment extends Observable {
 			// TODO tidy up shutdown
 			System.exit(1);
 		}
-		System.out.println("Particles updated");
-		setChanged();
-		notifyObservers();
+		//System.out.println("Particles updated");
 	}
 }

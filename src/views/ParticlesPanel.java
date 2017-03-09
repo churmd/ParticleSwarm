@@ -1,6 +1,7 @@
 package views;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
@@ -22,15 +23,20 @@ public class ParticlesPanel extends JPanel implements Observer {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Model model;
+	private double radius;
 
 	public ParticlesPanel(Model model) {
 		super();
 		this.model = model;
+		
+		setPreferredSize(new Dimension(500, 500));
+		
+		radius = 2.5;
 	}
 
 	@Override
 	public void paintComponent(Graphics g) {
-		System.out.println("Paint called");
+		//System.out.println("Paint called");
 		Graphics2D g2 = (Graphics2D) g;
 		int height = getHeight();
 		int width = getWidth();
@@ -47,8 +53,9 @@ public class ParticlesPanel extends JPanel implements Observer {
 			xt = ((xt / 100.0) * width);
 			double yt = p.getPosition().getElementAtIndex(1) + p.getVelocity().getElementAtIndex(1) * 2;
 			yt = ((yt / 100.0) * height);
+			
 			Line2D.Double line = new Line2D.Double(x, y, xt, yt);
-			Ellipse2D.Double circle = new Ellipse2D.Double(x - 2.5, y - 2.5, 5.0, 5.0);
+			Ellipse2D.Double circle = centeredCircle(x, y, radius);
 			g2.fill(circle);
 			g2.draw(line);
 		}
@@ -59,7 +66,7 @@ public class ParticlesPanel extends JPanel implements Observer {
 			x = (x / 100.0) * width;
 			double y = goal.getElementAtIndex(1);
 			y = (y / 100.0) * height;
-			Ellipse2D.Double circle = new Ellipse2D.Double(x, y, 5.0, 5.0);
+			Ellipse2D.Double circle = centeredCircle(x, y, radius);
 			g2.fill(circle);
 		}
 		
@@ -69,16 +76,20 @@ public class ParticlesPanel extends JPanel implements Observer {
 			x = (x / 100.0) * width;
 			double y = threat.getElementAtIndex(1);
 			y = (y / 100.0) * height;
-			Ellipse2D.Double circle = new Ellipse2D.Double(x, y, 5.0, 5.0);
+			Ellipse2D.Double circle = centeredCircle(x, y, radius);
 			g2.fill(circle);
 		}
 		
-		System.out.println("Repainted");
+		//System.out.println("Repainted");
 	}
-
+	
+	private Ellipse2D.Double centeredCircle(double x, double y, double radius){
+		return new Ellipse2D.Double(x - radius, y - radius, 2 * radius, 2 * radius);
+	}
+	
 	@Override
 	public void update(Observable o, Object arg) {
-		System.out.println("Panel update called");
+		//System.out.println("Panel update called");
 		repaint();
 	}
 

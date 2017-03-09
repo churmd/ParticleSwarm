@@ -29,6 +29,7 @@ public class Model extends Observable {
 
 				@Override
 				public void run() {
+					//System.out.println(System.currentTimeMillis());
 					env.updateParticles();
 					setChanged();
 					notifyObservers();
