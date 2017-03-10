@@ -15,6 +15,7 @@ public class Model extends Observable {
 	private Environment env;
 	private boolean running;
 	private ScheduledExecutorService schedular;
+	private boolean addingThreat;
 
 	public Model(Environment env) {
 		super();
@@ -52,6 +53,23 @@ public class Model extends Observable {
 		}
 	}
 
+	public void addingThreatMode(){
+		addingThreat = true;
+	}
+	
+	public void addingGoalMode(){
+		addingThreat = false;
+	}
+	
+	public void createThreatOrGoal(double x, double y){
+		//System.out.println("create called:" + x + " " + y);
+		if(addingThreat){
+			addThreat(x, y);
+		} else {
+			addGoal(x, y);
+		}
+	}
+	
 	public void addGoal(double x, double y) {
 		env.addGoal(x, y);
 		setChanged();
@@ -90,5 +108,13 @@ public class Model extends Observable {
 	
 	public boolean isRunning(){
 		return running;
+	}
+	
+	public double getWidth(){
+		return 100.0;
+	}
+	
+	public double getHeight(){
+		return 100.0;
 	}
 }

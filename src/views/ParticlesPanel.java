@@ -31,6 +31,8 @@ public class ParticlesPanel extends JPanel implements Observer {
 		
 		setPreferredSize(new Dimension(500, 500));
 		
+		addMouseListener(new ParticleScreenListener(model, this));
+		
 		radius = 2.5;
 	}
 

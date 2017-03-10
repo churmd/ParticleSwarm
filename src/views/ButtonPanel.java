@@ -5,9 +5,11 @@ import java.awt.GridLayout;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
@@ -18,8 +20,10 @@ public class ButtonPanel extends JPanel implements Observer {
 	private static final long serialVersionUID = -2844646719687839042L;
 
 	private JButton start, stop;
-	private JLabel numParticlesLabel;
+	private JLabel numParticlesLabel, threatGoalLabel;
 	private JSpinner numParticles;
+	private ButtonGroup threatGoalToggle;
+	private JRadioButton goalRadio, threatRadio;
 
 	private Model model;
 
@@ -31,12 +35,16 @@ public class ButtonPanel extends JPanel implements Observer {
 
 		startButton();
 		stopButton();
+		threatGoalLabel();
+		threatOrGoalRadioButtons();
 		numParticlesLabel();
 		particleNumSpinner();
 
-		setLayout(new GridLayout(2, 2));
+		setLayout(new GridLayout(4, 2));
 		add(numParticlesLabel);
 		add(numParticles);
+		add(goalRadio);
+		add(threatRadio);
 		add(start);
 		add(stop);
 	}
@@ -64,6 +72,26 @@ public class ButtonPanel extends JPanel implements Observer {
 		numParticlesLabel.setText("Number of Particles:");
 	}
 
+	private void threatOrGoalRadioButtons(){
+		goalRadio = new JRadioButton("Goal");
+		goalRadio.addActionListener(e -> model.addingGoalMode());
+		goalRadio.setSelected(false);
+		
+		threatRadio = new JRadioButton("Threat");
+		threatRadio.addActionListener(e -> model.addingThreatMode());
+		threatRadio.setSelected(true);
+		model.addingThreatMode();
+		
+		threatGoalToggle = new ButtonGroup();
+		threatGoalToggle.add(goalRadio);
+		threatGoalToggle.add(threatRadio);
+	}
+	
+	private void threatGoalLabel(){
+		threatGoalLabel = new JLabel();
+		threatGoalLabel.setText("Type of point to add:");
+	}
+	
 	@Override
 	public void update(Observable o, Object arg) {
 		numParticles.setValue(model.getNumParticles());
