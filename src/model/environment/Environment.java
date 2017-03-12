@@ -29,6 +29,7 @@ public class Environment {
 	private ReentrantReadWriteLock rwl;
 	private ReadLock rl;
 	private WriteLock wl;
+	private Weightings weights;
 
 	public Environment(int numParticles) {
 		rwl = new ReentrantReadWriteLock(true);
@@ -36,6 +37,7 @@ public class Environment {
 		wl = rwl.writeLock();
 
 		calc = new VectorCalcDouble();
+		weights = new Weightings(0.8, 1, 2, 1, 1);
 		this.numParticles = numParticles;
 		dimension = 2;
 		neighbourDistance = 20.0;
@@ -51,6 +53,18 @@ public class Environment {
 		threats = new ArrayList<>();
 		addThreat(37.5, 37.5);
 	}
+	
+	public void reset(){
+		setNumParticles(100);
+		removeGoals();
+		removeThreats();
+
+		weights.setCohesion(0.8);
+		weights.setAlignment(1);
+		weights.setSeparation(2);
+		weights.setGoal(1);
+		weights.setThreat(1);
+	}
 
 	public ArrayList<Vector<Double>> getGoals() {
 		rl.lock();
@@ -65,6 +79,15 @@ public class Environment {
 		wl.lock();
 		try {
 			goals.add(new Vector<>(new Double[] { x, y }));
+		} finally {
+			wl.unlock();
+		}
+	}
+	
+	private void removeGoals(){
+		wl.lock();
+		try {
+			goals.clear();
 		} finally {
 			wl.unlock();
 		}
@@ -86,6 +109,19 @@ public class Environment {
 		} finally {
 			wl.unlock();
 		}
+	}
+	
+	private void removeThreats(){
+		wl.lock();
+		try {
+			threats.clear();
+		} finally {
+			wl.unlock();
+		}
+	}
+	
+	public Weightings getWeightings(){
+		return weights;
 	}
 
 	public void setNumParticles(int numParticles) {
@@ -300,11 +336,11 @@ public class Environment {
 		public Particle call() throws Exception {
 			ArrayList<Vector<Double>> vectors = new ArrayList<>(6);
 			vectors.add(p.getVelocity());
-			vectors.add(calc.multiplyConstant(cohesion(p), 0.8));
-			vectors.add(alignment(p));
-			vectors.add(calc.multiplyConstant(separation(p), 2));
-			vectors.add(calc.multiplyConstant(seekGoal(p), 1));
-			vectors.add(avoidThreats(p));
+			vectors.add(calc.multiplyConstant(cohesion(p), weights.getCohesion()));
+			vectors.add(calc.multiplyConstant(alignment(p), weights.getAlignment()));
+			vectors.add(calc.multiplyConstant(separation(p), weights.getSeparation()));
+			vectors.add(calc.multiplyConstant(seekGoal(p), weights.getGoal()));
+			vectors.add(calc.multiplyConstant(avoidThreats(p), weights.getThreat()));
 
 			Vector<Double> newVelocity = calc.add(vectors);
 			newVelocity = smoothVelocity(p.getVelocity(), newVelocity);

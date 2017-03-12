@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import model.environment.Environment;
 import model.environment.Particle;
+import model.environment.Weightings;
 import model.vector.Vector;
 
 public class Model extends Observable {
@@ -16,10 +17,12 @@ public class Model extends Observable {
 	private boolean running;
 	private ScheduledExecutorService schedular;
 	private boolean addingThreat;
+	private Weightings weights;
 
 	public Model(Environment env) {
 		super();
 		this.env = env;
+		weights = env.getWeightings();
 	}
 
 	public void startSwarm() {
@@ -48,6 +51,14 @@ public class Model extends Observable {
 		if (running) {
 			schedular.shutdown();
 			running = false;
+			setChanged();
+			notifyObservers();
+		}
+	}
+	
+	public void resetEnvironment(){
+		if(!running){
+			env.reset();
 			setChanged();
 			notifyObservers();
 		}
@@ -116,5 +127,45 @@ public class Model extends Observable {
 	
 	public double getHeight(){
 		return 100.0;
+	}
+	
+	public void setAlignmentWeighting(double w){
+		weights.setAlignment(w);
+	}
+	
+	public double getAlignmentWeighting(){
+		return weights.getAlignment();
+	}
+	
+	public void setSeparationWeighting(double w){
+		weights.setSeparation(w);
+	}
+	
+	public double getSeparationWeighting(){
+		return weights.getSeparation();
+	}
+	
+	public void setCohesionWeighting(double w){
+		weights.setCohesion(w);
+	}
+	
+	public double getCohesionWeighting(){
+		return weights.getCohesion();
+	}
+	
+	public void setGoalWeighting(double w){
+		weights.setGoal(w);
+	}
+	
+	public double getGoalWeighting(){
+		return weights.getGoal();
+	}
+	
+	public void setThreatWeighting(double w){
+		weights.setThreat(w);
+	}
+	
+	public double getThreatWeighting(){
+		return weights.getThreat();
 	}
 }
