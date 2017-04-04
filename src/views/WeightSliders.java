@@ -1,5 +1,9 @@
 package views;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -17,23 +21,36 @@ public class WeightSliders extends JPanel implements Observer{
 	
 	private Model model;
 	private JSlider cohesion, alignment, separation, goal, threat;
-	private JLabel labelCohesion, labelAlignment, labelSeparation, labelGoal, labelThreat;
+	private JLabel labelTitle, labelCohesion, labelAlignment, labelSeparation, labelGoal, labelThreat;
 	
 	public WeightSliders(Model model) {
 		super();
 		this.model = model;
 		
 		setupSliders();
+		setupLabels();
 		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		add(Box.createVerticalGlue());
+		add(labelTitle);
+		add(Box.createVerticalGlue());
+		add(labelCohesion);
+		add(Box.createVerticalGlue());
 		add(cohesion);
+		add(Box.createVerticalGlue());
+		add(labelAlignment);
 		add(Box.createVerticalGlue());
 		add(alignment);
 		add(Box.createVerticalGlue());
+		add(labelSeparation);
+		add(Box.createVerticalGlue());
 		add(separation);
 		add(Box.createVerticalGlue());
+		add(labelGoal);
+		add(Box.createVerticalGlue());
 		add(goal);
+		add(Box.createVerticalGlue());
+		add(labelThreat);
 		add(Box.createVerticalGlue());
 		add(threat);
 		add(Box.createVerticalGlue());
@@ -72,6 +89,29 @@ public class WeightSliders extends JPanel implements Observer{
 		init = i.intValue();
 		threat = new JSlider(0, 100, init);;
 		threat.addChangeListener(e -> model.setThreatWeighting(threat.getValue() * 1.0 / 10.0));
+		
+	}
+	
+	private void setupLabels(){
+		labelTitle = new JLabel("Weightings");
+		labelTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+		Font labelfont = labelTitle.getFont();
+		labelTitle.setFont(new Font(labelfont.getFontName(), Font.PLAIN, labelfont.getSize() + 2));
+		
+		labelCohesion = new JLabel("Cohesion");
+		labelCohesion.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		labelAlignment = new JLabel("Alignment");
+		labelAlignment.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		labelSeparation = new JLabel("Separation");
+		labelSeparation.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		labelGoal = new JLabel("Goal seeking");
+		labelGoal.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		labelThreat = new JLabel("Threat avoidance");
+		labelThreat.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 	}
 

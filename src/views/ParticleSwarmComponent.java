@@ -1,11 +1,13 @@
 package views;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 
 import model.Model;
 
@@ -30,7 +32,7 @@ public class ParticleSwarmComponent extends JPanel{
 		model.addObserver(buttons);
 		
 		JPanel options = new JPanel();
-		options.setPreferredSize(new Dimension(200, 600));
+		//options.setPreferredSize(new Dimension(200, 600));
 		options.setLayout(new BoxLayout(options, BoxLayout.Y_AXIS));
 		options.add(Box.createVerticalGlue());
 		options.add(weights);
@@ -41,6 +43,8 @@ public class ParticleSwarmComponent extends JPanel{
 		options.add(Box.createVerticalGlue());
 		options.add(buttons);
 		options.add(Box.createVerticalGlue());
+
+		
 		
 		setLayout(new BorderLayout());
 		add(particles, BorderLayout.CENTER);

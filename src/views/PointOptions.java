@@ -1,11 +1,14 @@
 package views;
 
+import java.awt.Component;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.SwingConstants;
 
 import model.Model;
 
@@ -34,9 +37,9 @@ public class PointOptions extends JPanel{
 		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		add(Box.createVerticalGlue());
-		add(label);
+		add(label, CENTER_ALIGNMENT);
 		add(Box.createVerticalGlue());
-		add(radioButtonPanel);
+		add(radioButtonPanel, CENTER_ALIGNMENT);
 		add(Box.createVerticalGlue());
 	}
 	
@@ -57,6 +60,7 @@ public class PointOptions extends JPanel{
 	
 	private void setupLabel(){
 		label = new JLabel();
-		label.setText("<html>" + "Add pointof type:" + "</html>");
+		label.setText("Add a point of type:");
+		label.setAlignmentX(Component.CENTER_ALIGNMENT);
 	}
 }

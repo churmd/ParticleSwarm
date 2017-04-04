@@ -44,7 +44,7 @@ public class ParticleSpinner extends JPanel implements Observer{
 	
 	private void setupLabel(){
 		label = new JLabel();
-		label.setText("<html>" + "Number of particles:" + "</html>");
+		label.setText("Number of particles:");
 	}
 	
 	@Override
