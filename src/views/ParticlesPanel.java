@@ -24,6 +24,7 @@ public class ParticlesPanel extends JPanel implements Observer {
 	private static final long serialVersionUID = 1L;
 	private Model model;
 	private double radius;
+	private Color transGreen, transRed;
 
 	public ParticlesPanel(Model model) {
 		super();
@@ -34,6 +35,8 @@ public class ParticlesPanel extends JPanel implements Observer {
 		addMouseListener(new ParticleScreenListener(model, this));
 		
 		radius = 2.5;
+		transGreen = new Color(0, 255, 0, 51);
+		transRed = new Color(255, 0, 0, 51);
 	}
 
 	@Override
@@ -45,7 +48,37 @@ public class ParticlesPanel extends JPanel implements Observer {
 		g2.clearRect(0, 0, width, height);
 		g2.setColor(Color.BLACK);
 		ArrayList<Particle> particles = model.getParticles();
+		
+		double neighbourDistanceWidth = (model.getNeighbourDistance() / 100.0) * width;
+		double neighbourDistanceHeight = (model.getNeighbourDistance() / 100.0) * height;
+		double neighbourDist = Math.min(neighbourDistanceWidth, neighbourDistanceHeight);
 
+		for (Vector<Double> goal : model.getGoals()) {
+			double x = goal.getElementAtIndex(0);
+			x = (x / 100.0) * width;
+			double y = goal.getElementAtIndex(1);
+			y = (y / 100.0) * height;
+			Ellipse2D.Double areaCircle = centeredCircle(x, y, neighbourDist);
+			g2.setColor(transGreen);
+			g2.fill(areaCircle);
+			Ellipse2D.Double circle = centeredCircle(x, y, radius);
+			g2.setColor(Color.GREEN);
+			g2.fill(circle);
+		}
+		
+		for (Vector<Double> threat : model.getThreats()) {
+			double x = threat.getElementAtIndex(0);
+			x = (x / 100.0) * width;
+			double y = threat.getElementAtIndex(1);
+			y = (y / 100.0) * height;
+			Ellipse2D.Double areaCircle = centeredCircle(x, y, neighbourDist);
+			g2.setColor(transRed);
+			g2.fill(areaCircle);
+			Ellipse2D.Double circle = centeredCircle(x, y, radius);
+			g2.setColor(Color.RED);
+			g2.fill(circle);
+		}
+		
 		for (Particle p : particles) {
 			double x = p.getPosition().getElementAtIndex(0);
 			x = (x / 100.0) * width;
@@ -58,31 +91,11 @@ public class ParticlesPanel extends JPanel implements Observer {
 			
 			Line2D.Double line = new Line2D.Double(x, y, xt, yt);
 			Ellipse2D.Double circle = centeredCircle(x, y, radius);
+			g2.setColor(Color.black);
 			g2.fill(circle);
 			g2.draw(line);
 		}
 
-		for (Vector<Double> goal : model.getGoals()) {
-			g2.setColor(Color.GREEN);
-			double x = goal.getElementAtIndex(0);
-			x = (x / 100.0) * width;
-			double y = goal.getElementAtIndex(1);
-			y = (y / 100.0) * height;
-			Ellipse2D.Double circle = centeredCircle(x, y, radius);
-			g2.fill(circle);
-		}
-		
-		for (Vector<Double> threat : model.getThreats()) {
-			g2.setColor(Color.RED);
-			double x = threat.getElementAtIndex(0);
-			x = (x / 100.0) * width;
-			double y = threat.getElementAtIndex(1);
-			y = (y / 100.0) * height;
-			Ellipse2D.Double circle = centeredCircle(x, y, radius);
-			g2.fill(circle);
-		}
-		
-		//System.out.println("Repainted");
 	}
 	
 	private Ellipse2D.Double centeredCircle(double x, double y, double radius){

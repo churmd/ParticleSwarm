@@ -54,6 +54,10 @@ public class Environment {
 		addThreat(37.5, 37.5);
 	}
 	
+	public double getNeighbourDistance(){
+		return neighbourDistance;
+	}
+	
 	public void reset(){
 		setNumParticles(100);
 		removeGoals();

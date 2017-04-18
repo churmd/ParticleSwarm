@@ -117,6 +117,10 @@ public class Model extends Observable {
 		return env.getNumParticles();
 	}
 	
+	public double getNeighbourDistance(){
+		return env.getNeighbourDistance();
+	}
+	
 	public boolean isRunning(){
 		return running;
 	}
