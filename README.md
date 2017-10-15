@@ -9,4 +9,4 @@ Options for the visualisation are on the right of the screen, including:
 - Sliders to alter the weighting of each part of a particle's behaviour, going from 0-max
 - A toggle to select whether a goal or threat is added when clicking on screen 
 - A number field to select the number of particles (currently capped at 200)
-- A start. stop and reset button to control the visualisation
+- A start, stop and reset button to control the visualisation
