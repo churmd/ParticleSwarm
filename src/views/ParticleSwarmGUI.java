@@ -2,21 +2,25 @@ package views;
 
 import javax.swing.JFrame;
 
+import controller.Controller;
 import model.Model;
 import model.environment.Environment;
 
-public class ParticleSwarmGUI {
+public class ParticleSwarmGUI extends JFrame {
 
-	public static void main(String[] args) {
-		JFrame frame = new JFrame("Particle Swarm");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+	public ParticleSwarmGUI() {
+		super();
+
+		this.setTitle("Particle Swarm");
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 		Environment env = new Environment(100);
 		Model model = new Model(env);
-		ParticleSwarmComponent comp = new ParticleSwarmComponent(model);
-		
-		frame.add(comp);
-		frame.pack();
-		frame.setVisible(true);
+		Controller con = new Controller(model);
+		ParticleSwarmComponent comp = new ParticleSwarmComponent(model, con);
+
+		this.add(comp);
+		this.pack();
+		this.setVisible(true);
 	}
 }

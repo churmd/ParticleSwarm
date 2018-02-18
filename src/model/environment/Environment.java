@@ -47,11 +47,11 @@ public class Environment {
 		genNewParticles();
 
 		goals = new ArrayList<>();
-		addGoal(50, 50);
-		addGoal(25, 25);
+//		addGoal(50, 50);
+//		addGoal(25, 25);
 
 		threats = new ArrayList<>();
-		addThreat(37.5, 37.5);
+		//addThreat(37.5, 37.5);
 	}
 	
 	public double getNeighbourDistance(){

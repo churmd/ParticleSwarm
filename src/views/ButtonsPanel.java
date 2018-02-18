@@ -8,6 +8,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import controller.Controller;
 import model.Model;
 
 public class ButtonsPanel extends JPanel implements Observer{
@@ -16,9 +17,12 @@ public class ButtonsPanel extends JPanel implements Observer{
 	private Model model;
 	private JButton start, stop, reset;
 
-	public ButtonsPanel(Model model) {
+	private Controller con;
+
+	public ButtonsPanel(Model model, Controller con) {
 		super();
 		this.model = model;
+		this.con = con;
 		
 		setupStart();
 		setupStop();
@@ -37,19 +41,19 @@ public class ButtonsPanel extends JPanel implements Observer{
 	private void setupStart(){
 		start = new JButton("Start");
 		start.setEnabled(true);
-		start.addActionListener(e -> model.startSwarm());
+		start.addActionListener(e -> con.startSwarm());
 	}
 	
 	private void setupStop(){
 		stop = new JButton("Stop");
 		stop.setEnabled(false);
-		stop.addActionListener(e -> model.stopSwarm());
+		stop.addActionListener(e -> con.stopSwarm());
 	}
 	
 	private void setupReset(){
 		reset = new JButton("Reset");
 		reset.setEnabled(true);
-		reset.addActionListener(e -> model.resetEnvironment());
+		reset.addActionListener(e -> con.resetEnvironment());
 	}
 
 	@Override

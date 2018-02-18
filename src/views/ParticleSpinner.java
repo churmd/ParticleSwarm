@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import controller.Controller;
 import model.Model;
 
 public class ParticleSpinner extends JPanel implements Observer{
@@ -19,10 +20,13 @@ public class ParticleSpinner extends JPanel implements Observer{
 	private JLabel label;
 
 	private Model model;
+
+	private Controller con;
 	
-	public ParticleSpinner(Model model) {
+	public ParticleSpinner(Model model, Controller con) {
 		super();
 		this.model = model;
+		this.con = con;
 		
 		setupSpinner();
 		setupLabel();
@@ -37,7 +41,7 @@ public class ParticleSpinner extends JPanel implements Observer{
 	
 	private void setupSpinner(){
 		SpinnerNumberModel spinnermodel = new SpinnerNumberModel(model.getNumParticles(), 1, 200, 1);
-		spinnermodel.addChangeListener(e -> model.setNumParticles(spinnermodel.getNumber().intValue()));
+		spinnermodel.addChangeListener(e -> con.setNumParticles(spinnermodel.getNumber().intValue()));
 		spinner = new JSpinner(spinnermodel);
 		spinner.setEnabled(true);
 	}

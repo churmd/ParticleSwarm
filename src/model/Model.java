@@ -24,6 +24,10 @@ public class Model extends Observable {
 		this.env = env;
 		weights = env.getWeightings();
 	}
+	
+	public Weightings getWeights() {
+		return env.getWeightings();
+	}
 
 	public void startSwarm() {
 		if (!running) {

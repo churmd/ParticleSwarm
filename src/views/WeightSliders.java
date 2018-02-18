@@ -14,18 +14,21 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 
+import controller.Controller;
 import model.Model;
 
 public class WeightSliders extends JPanel implements Observer{
 	private static final long serialVersionUID = -4897738360477893186L;
 	
 	private Model model;
+	private Controller con;
 	private JSlider cohesion, alignment, separation, goal, threat;
 	private JLabel labelTitle, labelCohesion, labelAlignment, labelSeparation, labelGoal, labelThreat;
 	
-	public WeightSliders(Model model) {
+	public WeightSliders(Model model, Controller con) {
 		super();
 		this.model = model;
+		this.con = con;
 		
 		setupSliders();
 		setupLabels();
@@ -64,31 +67,31 @@ public class WeightSliders extends JPanel implements Observer{
 		i = i * 10.0;
 		init = i.intValue();
 		cohesion = new JSlider(0, 100, init);;
-		cohesion.addChangeListener(e -> model.setCohesionWeighting(cohesion.getValue() * 1.0 / 10.0));
+		cohesion.addChangeListener(e -> con.setCohesionWeighting(cohesion.getValue() * 1.0 / 10.0));
 		
 		i = new Double(model.getAlignmentWeighting());
 		i = i * 10.0;
 		init = i.intValue();
 		alignment = new JSlider(0, 100, init);;
-		alignment.addChangeListener(e -> model.setAlignmentWeighting(alignment.getValue() * 1.0 / 10.0));
+		alignment.addChangeListener(e -> con.setAlignmentWeighting(alignment.getValue() * 1.0 / 10.0));
 		
 		i = new Double(model.getSeparationWeighting());
 		i = i * 10.0;
 		init = i.intValue();
 		separation = new JSlider(0, 100, init);;
-		separation.addChangeListener(e -> model.setSeparationWeighting(separation.getValue() * 1.0 / 10.0));
+		separation.addChangeListener(e -> con.setSeparationWeighting(separation.getValue() * 1.0 / 10.0));
 		
 		i = new Double(model.getGoalWeighting());
 		i = i * 10.0;
 		init = i.intValue();
 		goal = new JSlider(0, 100, init);;
-		goal.addChangeListener(e -> model.setGoalWeighting(goal.getValue() * 1.0 / 10.0));
+		goal.addChangeListener(e -> con.setGoalWeighting(goal.getValue() * 1.0 / 10.0));
 		
 		i = new Double(model.getThreatWeighting());
 		i = i * 10.0;
 		init = i.intValue();
 		threat = new JSlider(0, 100, init);;
-		threat.addChangeListener(e -> model.setThreatWeighting(threat.getValue() * 1.0 / 10.0));
+		threat.addChangeListener(e -> con.setThreatWeighting(threat.getValue() * 1.0 / 10.0));
 		
 	}
 	

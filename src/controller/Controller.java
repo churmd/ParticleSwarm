@@ -1,71 +1,69 @@
 package controller;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import model.environment.Environment;
+import model.Model;
 
 public class Controller {
 
-	private Environment enviroment;
-	private boolean running;
-	private Thread t;
-	private ScheduledExecutorService schedular;
+	private Model model;
 	
-	public Controller(Environment enviroment){
-		this.enviroment = enviroment;
+	public Controller(Model model){
+		this.model = model;
 	}
 	
 	public void startSwarm(){
-		schedular = Executors.newSingleThreadScheduledExecutor();
-		
-		Runnable updater = new Runnable() {
-			
-			@Override
-			public void run() {
-				enviroment.updateParticles();
-			}
-		};
-		
-		running = true;
-		schedular.scheduleAtFixedRate(updater, 0, 50, TimeUnit.MILLISECONDS);
+		model.startSwarm();
 	}
-	
-	public void startSwarmTest(){
-		Runnable updater = new Runnable() {
-			int i = 0;
-			@Override
-			public void run() {
-				while(i<200){
-					enviroment.updateParticles();
-					i++;
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				
-			}
-		};
-		t = new Thread(updater);
-		t.start();
-	}
+
 	
 	public void stopSwarm(){
-		if(running){
-			schedular.shutdown();
-			running = false;
-		} 
+		model.stopSwarm();
 	}
 	
-	public void addGoal(double x, double y){
-		enviroment.addGoal(x, y);
+	public void resetEnvironment(){
+		model.resetEnvironment();
 	}
 	
-	public void addThreat(double x, double y){
-		enviroment.addThreat(x, y);
+	public void addingThreatMode(){
+		model.addingThreatMode();
+	}
+	
+	public void addingGoalMode(){
+		model.addingGoalMode();
+	}
+	
+	public void createThreatOrGoal(double x, double y){
+		model.createThreatOrGoal(x, y);
+	}
+	
+	public void addGoal(double x, double y) {
+		model.addGoal(x, y);
+	}
+
+	public void addThreat(double x, double y) {
+		model.addThreat(x, y);
+	}
+	
+	public void setNumParticles(int num){
+		model.setNumParticles(num);
+	}
+	
+	public void setAlignmentWeighting(double w){
+		model.setAlignmentWeighting(w);
+	}
+	
+	public void setSeparationWeighting(double w){
+		model.setSeparationWeighting(w);
+	}
+	
+	public void setCohesionWeighting(double w){
+		model.setCohesionWeighting(w);
+	}
+	
+	public void setGoalWeighting(double w){
+		model.setGoalWeighting(w);
+	}
+	
+	public void setThreatWeighting(double w){
+		model.setThreatWeighting(w);
 	}
 }

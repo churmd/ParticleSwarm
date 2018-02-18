@@ -9,12 +9,13 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
+import controller.Controller;
 import model.Model;
 
 public class ParticleSwarmComponent extends JPanel{
 	private static final long serialVersionUID = -7674957251900125641L;
 
-	public ParticleSwarmComponent(Model model) {
+	public ParticleSwarmComponent(Model model, Controller con) {
 		super();
 		
 		ParticlesPanel particles = new ParticlesPanel(model);
@@ -23,12 +24,12 @@ public class ParticleSwarmComponent extends JPanel{
 		model.addObserver(particles);
 		//model.addObserver(buttons);
 		
-		WeightSliders weights = new WeightSliders(model);
+		WeightSliders weights = new WeightSliders(model, con);
 		model.addObserver(weights);
-		PointOptions pointOptions = new PointOptions(model);
-		ParticleSpinner spinner = new ParticleSpinner(model);
+		PointOptions pointOptions = new PointOptions(con);
+		ParticleSpinner spinner = new ParticleSpinner(model, con);
 		model.addObserver(spinner);
-		ButtonsPanel buttons = new ButtonsPanel(model);
+		ButtonsPanel buttons = new ButtonsPanel(model, con);
 		model.addObserver(buttons);
 		
 		JPanel options = new JPanel();
